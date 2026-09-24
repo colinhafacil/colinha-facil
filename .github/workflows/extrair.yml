@@ -27,5 +27,12 @@ jobs:
           git config user.name "colinha-facil"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Adicionar projeto Colinha Fácil"
-          git push
+          git add .
+          git add .
+          if git diff --cached --quiet; then
+                       echo "Nenhuma alteração para salvar."
+                     else
+             git commit -m "Atualiza projeto"
+             git push
+             fi
+          
