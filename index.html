@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b6b3a" />
+  <meta name="description" content="Colinha Fácil — organize sua anotação pessoal para as Eleições 2026." />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" />
+  <title>Colinha Fácil — Paraná</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">✓</div>
+      <div>
+        <strong>COLINHA FÁCIL</strong>
+        <span>Eleições 2026</span>
+      </div>
+    </div>
+    <div class="state-pill">PR • Paraná</div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">PARANÁ • 2026</p>
+        <h1>Monte sua colinha<br><span>em poucos minutos.</span></h1>
+        <p class="lead">Pesquise por nome, número ou partido e organize sua anotação pessoal na ordem da urna.</p>
+      </div>
+      <div class="hero-card">
+        <div class="hero-number">6</div>
+        <div><b>votos</b><small>na ordem oficial</small></div>
+      </div>
+    </section>
+
+    <div class="notice">
+      <b>Importante:</b> o Colinha Fácil não indica em quem votar. Você escolhe os candidatos; o site apenas organiza os números. Para votar, leve a colinha impressa ou anotada — o celular não pode ser usado na cabine.
+    </div>
+
+    <section class="workspace">
+      <div class="steps" id="steps"></div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow" id="stepLabel">1 de 6</p>
+            <h2 id="cargoTitle">Deputado Federal</h2>
+          </div>
+          <button class="link-btn" id="clearStep">Limpar</button>
+        </div>
+
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" placeholder="Digite nome, número ou partido..." autocomplete="off" />
+        </label>
+
+        <div class="filters">
+          <button class="filter active" data-filter="todos">Todos</button>
+          <button class="filter" data-filter="partido">Partido</button>
+          <button class="filter" data-filter="numero">Número</button>
+        </div>
+
+        <div id="results" class="results"></div>
+        <div id="empty" class="empty hidden">Digite pelo menos 2 caracteres para pesquisar.</div>
+
+        <div class="actions">
+          <button class="secondary" id="backBtn">← Voltar</button>
+          <button class="primary" id="nextBtn">Continuar →</button>
+        </div>
+      </div>
+
+      <aside class="summary">
+        <div class="summary-head">
+          <h3>Minha colinha</h3>
+          <span id="selectedCount">0/6</span>
+        </div>
+        <div id="summaryList"></div>
+        <button class="generate" id="generateBtn">✓ Ver minha colinha</button>
+      </aside>
+    </section>
+
+    <section id="finalSection" class="final hidden">
+      <div class="final-head">
+        <div>
+          <p class="eyebrow">PRONTA</p>
+          <h2>Minha colinha</h2>
+          <p>Confira os números antes de imprimir.</p>
+        </div>
+        <button class="secondary" id="editBtn">← Editar</button>
+      </div>
+      <div id="ticket" class="ticket"></div>
+      <div class="final-actions">
+        <button class="primary" id="printBtn">🖨 Imprimir</button>
+        <button class="primary" id="downloadBtn">⬇ Baixar imagem</button>
+        <button class="secondary" id="shareBtn">↗ Compartilhar</button>
+      </div>
+      <p class="source-note">Dados de candidaturas: TSE / CAND, Candex e DivulgaCand. Consulte a data da última atualização dos dados no site.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div><b>Colinha Fácil</b> • ferramenta de organização pessoal</div>
+    <div>Dados oficiais: <a href="https://dadosabertos.tse.jus.br/dataset/candidatos-2026" target="_blank" rel="noreferrer">Portal de Dados Abertos do TSE</a></div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
