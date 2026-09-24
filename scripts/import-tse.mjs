@@ -4,8 +4,8 @@ import AdmZip from "adm-zip";
 import { parse } from "csv-parse/sync";
 
 const CAND_URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2026.zip";
-const OUT = path.resolve("data/candidatos-pr.json");
-const META = path.resolve("data/tse-meta.json");
+const OUT = path.resolve("public/data/candidatos-pr.json");
+const META = path.resolve("public/data/tse-meta.json");
 
 function pick(row, keys){
   for(const k of keys){
