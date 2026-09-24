@@ -78,6 +78,10 @@
         </div>
         <div id="summaryList"></div>
         <button class="generate" id="generateBtn">✓ Ver minha colinha</button>
+        <div class="summary-actions">
+          <button class="secondary" id="urnaBtn">🗳️ Ver na urna</button>
+          <button class="danger" id="clearAllBtn">🗑 Limpar tudo</button>
+        </div>
       </aside>
     </section>
 
@@ -94,10 +98,19 @@
       <div class="final-actions">
         <button class="primary" id="printBtn">🖨 Imprimir</button>
         <button class="primary" id="downloadBtn">⬇ Baixar imagem</button>
-        <button class="secondary" id="shareBtn">↗ Compartilhar</button>
+        <button class="secondary" id="shareBtn">↗ Compartilhar imagem</button>
+        <button class="whatsapp" id="whatsappBtn">💬 WhatsApp</button>
       </div>
       <p class="source-note">Dados de candidaturas: Tribunal Superior Eleitoral (TSE), obtidos no Portal de Dados Abertos. O Colinha Fácil é independente do TSE e não indica candidatos.</p>
     </section>
+
+    <div id="urnaModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-head"><div><p class="eyebrow">SIMULAÇÃO</p><h2>Como ficará na urna</h2></div><button class="secondary" id="closeUrnaBtn">Fechar</button></div>
+        <p class="modal-note">Esta é apenas uma simulação visual da ordem de votação. Não registra nem envia votos.</p>
+        <div id="urnaList" class="urna-list"></div>
+      </div>
+    </div>
   </main>
 
   <footer>

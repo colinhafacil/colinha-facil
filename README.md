@@ -25,3 +25,6 @@ npm run build
 
 ## Dados oficiais
 O build importa a base de Candidatos 2026 diretamente do Portal de Dados Abertos do TSE antes de gerar o site.
+
+## Fotos oficiais
+A V6 importa, no build, as fotos de candidatos disponibilizadas pelo TSE para 2026 e associa cada imagem ao `SQ_CANDIDATO`. Se uma foto não estiver disponível, o aplicativo usa as iniciais do nome como fallback.

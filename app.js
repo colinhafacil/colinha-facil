@@ -144,6 +144,25 @@ function renderTicket(){
     }).join("");
 }
 
+
+function renderUrna(){
+  $("urnaList").innerHTML = CARGOS.map((c,i)=>{
+    const x=selecionados[c.key];
+    return `<div class="urna-row"><span class="urna-cargo">${i+1}. ${c.label}</span><strong>${x ? escapeHtml(x.numero) : "—"}</strong></div>`;
+  }).join("");
+}
+
+function abrirUrna(){
+  renderUrna();
+  $("urnaModal").classList.remove("hidden");
+  $("urnaModal").setAttribute("aria-hidden","false");
+}
+
+function fecharUrna(){
+  $("urnaModal").classList.add("hidden");
+  $("urnaModal").setAttribute("aria-hidden","true");
+}
+
 function showFinal(){
   renderTicket();
   $("finalSection").classList.remove("hidden");
@@ -159,24 +178,54 @@ $("nextBtn").onclick=()=>{if(!selecionados[CARGOS[index].key]){alert("Escolha um
 $("backBtn").onclick=()=>{if(index>0){index--;render()}};
 $("clearStep").onclick=()=>{delete selecionados[CARGOS[index].key];save();render()};
 $("generateBtn").onclick=showFinal;
+$("urnaBtn").onclick=abrirUrna;
+$("closeUrnaBtn").onclick=fecharUrna;
+$("urnaModal").addEventListener("click",e=>{if(e.target.id==="urnaModal")fecharUrna()});
+$("clearAllBtn").onclick=()=>{if(confirm("Tem certeza que deseja limpar todos os candidatos escolhidos?")){Object.keys(selecionados).forEach(k=>delete selecionados[k]);save();fecharUrna();$("finalSection").classList.add("hidden");index=0;render();window.scrollTo({top:0,behavior:"smooth"})}};
 $("editBtn").onclick=()=>{$("finalSection").classList.add("hidden");window.scrollTo({top:0,behavior:"smooth"})};
 $("printBtn").onclick=()=>window.print();
-$("shareBtn").onclick=async()=>{
-  const text="Minha colinha eleitoral está pronta no Colinha Fácil.";
-  if(navigator.share){await navigator.share({title:"Minha Colinha — Eleições 2026",text,url:location.href});}
-  else {await navigator.clipboard.writeText(location.href);alert("Link copiado!");}
-};
-$("downloadBtn").onclick=async()=>{
+async function gerarImagemColinha(){
   const node=$("ticket");
-  if(window.html2canvas){
-    const canvas=await window.html2canvas(node,{scale:2,backgroundColor:"#ffffff",useCORS:true});
+  if(!window.html2canvas) throw new Error("gerador de imagem não carregou");
+  return window.html2canvas(node,{scale:2,backgroundColor:"#ffffff",useCORS:true});
+}
+
+$("shareBtn").onclick=async()=>{
+  try{
+    const canvas=await gerarImagemColinha();
+    canvas.toBlob(async(blob)=>{
+      if(!blob) throw new Error("não foi possível gerar a imagem");
+      const file=new File([blob],"minha-colinha-2026.png",{type:"image/png"});
+      const text="Minha colinha eleitoral 2026 está pronta no Colinha Fácil.";
+      if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
+        await navigator.share({title:"Minha Colinha — Eleições 2026",text,files:[file]});
+      }else if(navigator.share){
+        await navigator.share({title:"Minha Colinha — Eleições 2026",text,url:location.href});
+      }else{
+        await navigator.clipboard.writeText(location.href);
+        alert("Link copiado! Você pode colar no WhatsApp ou em outro aplicativo.");
+      }
+    },"image/png");
+  }catch(err){
+    if(err?.name !== "AbortError") alert("Não foi possível compartilhar agora. Use Baixar imagem e envie pelo WhatsApp.");
+  }
+};
+
+$("whatsappBtn").onclick=()=>{
+  const text="Minha colinha eleitoral 2026 está pronta no Colinha Fácil. Confira e monte a sua também: "+location.href;
+  window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank","noopener,noreferrer");
+};
+
+$("downloadBtn").onclick=async()=>{
+  try{
+    const canvas=await gerarImagemColinha();
     const a=document.createElement("a");
     a.download="minha-colinha-2026.png";
     a.href=canvas.toDataURL("image/png");
     a.click();
-    return;
+  }catch(err){
+    alert("O gerador de imagem não carregou. Use Imprimir por enquanto.");
   }
-  alert("O gerador de imagem não carregou. Use Imprimir por enquanto.");
 };
 
 if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(()=>{});

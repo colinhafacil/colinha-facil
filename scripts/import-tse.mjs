@@ -6,6 +6,11 @@ import { parse } from "csv-parse/sync";
 const CAND_URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2026.zip";
 const OUT = path.resolve("data/candidatos-pr.json");
 const META = path.resolve("data/tse-meta.json");
+const PHOTO_DIR = path.resolve("public/fotos");
+const PHOTO_URLS = [
+  "https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/fotos/foto_cand2026_PR_div.zip",
+  "https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/fotos/foto_cand2026_BR_div.zip"
+];
 
 function pick(row, keys){
   for(const k of keys){
@@ -94,3 +99,39 @@ await fs.writeFile(META,JSON.stringify({
 
 console.log(`Candidatos importados: ${unique.length}`);
 console.log(`Arquivo: ${OUT}`);
+
+// Importa as fotos oficiais disponibilizadas pelo TSE/DivulgaCand.
+// A foto é associada pelo SQ_CANDIDATO e salva localmente para o site.
+await fs.rm(PHOTO_DIR,{recursive:true,force:true});
+await fs.mkdir(PHOTO_DIR,{recursive:true});
+const byId = new Map(unique.map(c=>[String(c.id),c]));
+let fotosImportadas = 0;
+for(const photoUrl of PHOTO_URLS){
+  try{
+    console.log(`Baixando fotos: ${photoUrl}`);
+    const pzip = new AdmZip(await download(photoUrl));
+    for(const entry of pzip.getEntries()){
+      if(entry.isDirectory || !/\.(jpe?g|png)$/i.test(entry.entryName)) continue;
+      const base = path.basename(entry.entryName);
+      const matches = base.match(/\d{6,}/g) || [];
+      const id = matches.find(d=>byId.has(d));
+      if(!id) continue;
+      const outName = `${id}.jpg`;
+      await fs.writeFile(path.join(PHOTO_DIR,outName),entry.getData());
+      byId.get(id).foto_url = `/fotos/${outName}`;
+      fotosImportadas++;
+    }
+  }catch(err){
+    console.warn(`Aviso: fotos não importadas de ${photoUrl}: ${err.message}`);
+  }
+}
+await fs.writeFile(OUT,JSON.stringify(unique,null,2),"utf8");
+await fs.writeFile(META,JSON.stringify({
+  fonte:"TSE - Portal de Dados Abertos / DivulgaCand",
+  dataset:"Candidatos - 2026",
+  url:"https://dadosabertos.tse.jus.br/dataset/candidatos-2026",
+  atualizado_em:new Date().toISOString(),
+  quantidade:unique.length,
+  fotos_importadas:fotosImportadas
+},null,2),"utf8");
+console.log(`Fotos importadas: ${fotosImportadas}`);
