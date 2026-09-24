@@ -7,12 +7,6 @@ const CARGOS = [
   {key:"presidente", label:"Presidente", short:"Presidente", digits:2},
 ];
 
-const demo = [
-  {id:"demo-1",nome_urna:"ANIBELLI NETO",nome_completo:"ANIBELLI NETO",numero:"15190",cargo:"DEPUTADO ESTADUAL",partido_sigla:"MDB",uf:"PR"},
-  {id:"demo-2",nome_urna:"SÉRGIO SOUZA",nome_completo:"SÉRGIO SOUZA",numero:"1512",cargo:"DEPUTADO FEDERAL",partido_sigla:"MDB",uf:"PR"},
-  {id:"demo-3",nome_urna:"ALEXANDRE CURI",nome_completo:"ALEXANDRE CURI",numero:"100",cargo:"SENADOR",partido_sigla:"PSD",uf:"PR"},
-  {id:"demo-4",nome_urna:"SANDRO ALEX",nome_completo:"SANDRO ALEX",numero:"55",cargo:"GOVERNADOR",partido_sigla:"PSD",uf:"PR"},
-];
 
 let candidatos = [];
 let index = 0;
@@ -26,8 +20,9 @@ async function carregarDados(){
     const r = await fetch("/data/candidatos-pr.json");
     if(!r.ok) throw new Error("dados não encontrados");
     candidatos = await r.json();
-  }catch{
-    candidatos = demo;
+  }catch(err){
+    console.error("Falha ao carregar a base oficial do TSE:", err);
+    candidatos = [];
   }
   render();
 }
@@ -64,7 +59,11 @@ function renderSteps(){
 
 function renderResults(){
   const q = normalize($("searchInput").value.trim());
-  const list = candidatos.filter(c=>c.uf==="PR" && cargoMatches(c)).filter(c=>{
+  const ufEsperada = CARGOS[index].key === "presidente" ? "BR" : "PR";
+  const outroSenadorKey = CARGOS[index].key === "senador1" ? "senador2" : (CARGOS[index].key === "senador2" ? "senador1" : null);
+  const idOutroSenador = outroSenadorKey ? selecionados[outroSenadorKey]?.id : null;
+  const list = candidatos.filter(c=>c.uf===ufEsperada && cargoMatches(c))
+    .filter(c=>!idOutroSenador || String(c.id)!==String(idOutroSenador)).filter(c=>{
     if(!q) return false;
     const hay = normalize(`${c.nome_urna} ${c.nome_completo} ${c.numero} ${c.partido_sigla}`);
     if(filtro==="numero") return String(c.numero||"").includes(q);
@@ -72,6 +71,12 @@ function renderResults(){
     return hay.includes(q);
   }).slice(0,30);
 
+  if(!candidatos.length){
+    $("empty").classList.remove("hidden");
+    $("empty").textContent = "A base oficial de candidatos ainda não foi carregada. Atualize a página em alguns instantes.";
+    $("results").innerHTML = "";
+    return;
+  }
   $("empty").classList.toggle("hidden", !!q && list.length===0 ? false : true);
   if(!q){
     $("results").innerHTML = `<div class="empty">Digite nome, número ou partido para encontrar candidatos.</div>`;

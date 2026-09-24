@@ -21,3 +21,7 @@ npm run dev
 ```bash
 npm run build
 ```
+
+
+## Dados oficiais
+O build importa a base de Candidatos 2026 diretamente do Portal de Dados Abertos do TSE antes de gerar o site.
