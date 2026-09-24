@@ -1,0 +1,31 @@
+name: Extrair projeto
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extrair:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Extrair ZIP
+        run: |
+          unzip -o colinha-facil-pr-mvp.zip -d projeto
+          cp -r projeto/* .
+          cp -r projeto/.[!.]* . 2>/dev/null || true
+          rm -rf projeto
+          rm -f colinha-facil-pr-mvp.zip
+
+      - name: Salvar arquivos
+        run: |
+          git config user.name "colinha-facil"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Adicionar projeto Colinha Fácil"
+          git push
