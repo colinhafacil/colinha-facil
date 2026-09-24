@@ -18,6 +18,7 @@ jobs:
         run: |
           unzip -o colinha-facil-pr-tse-v2.zip -d projeto
           rm -rf projeto/.github
+          cp -r projeto/* .
           rm -rf projeto
           rm -f colinha-facil-pr-mvp.zip
 
