@@ -17,7 +17,7 @@ jobs:
       - name: Extrair ZIP
         run: |
           unzip -o colinha-facil-pr-tse-v2.zip -d projeto
-          cp -r projeto/.[!.]* . 2>/dev/null || true
+          rm -rf projeto/.github
           rm -rf projeto
           rm -f colinha-facil-pr-mvp.zip
 
