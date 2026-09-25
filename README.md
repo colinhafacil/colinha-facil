@@ -20,6 +20,6 @@ O build executa `scripts/import-tse.mjs` antes do Vite. O importador grava os da
 Se a base oficial não puder ser baixada ou retornar poucos registros, o build falha de propósito, evitando publicar um site vazio.
 
 
-## V9
+## V10
 - Impressão otimizada para colinha compacta de 50 mm x 100 mm (5 cm x 10 cm).
 - A tela normal continua igual; somente a impressão usa o formato compacto.
