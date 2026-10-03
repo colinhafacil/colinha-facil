@@ -16,8 +16,8 @@ jobs:
 
       - name: Extrair ZIP
         run: |
-         unzip -o ColinhaFacil_V11_A4_1-4.zip -d projeto
-          rm -rf projeto/.github
+         unzip -o ColinhaFacil_V13_link_colinha.zip -d projeto
+   ..       rm -rf projeto/.github
           cp -r projeto/* .
           rm -rf projeto
           rm -f colinha-facil-pr-mvp.zip
